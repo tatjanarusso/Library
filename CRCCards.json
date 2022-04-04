@@ -1,0 +1,137 @@
+[
+    {
+      "name": "Book",
+      "superclasses": "",
+      "subclasses": "",
+      "type": 1,
+      "responsibilities": [
+        "Getter and Setter for Book data, such as author, genre, title"
+      ],
+      "collaborators": [
+        "DBHandler",
+        "User",
+        "Librarian",
+        "Customer",
+        "DBCommand"
+      ]
+    },
+    {
+      "name": "DBConnector",
+      "superclasses": "",
+      "subclasses": "",
+      "type": 1,
+      "responsibilities": [
+        "connects to the library db"
+      ],
+      "collaborators": [
+        "DBHandler"
+      ]
+    },
+    {
+      "name": "DBHandler",
+      "superclasses": "",
+      "subclasses": "",
+      "type": 1,
+      "responsibilities": [
+        "Handles database requests"
+      ],
+      "collaborators": [
+        "DBConnector",
+        "Book",
+        "DBCommand"
+      ]
+    },
+    {
+      "name": "User",
+      "superclasses": "",
+      "subclasses": "",
+      "type": 1,
+      "responsibilities": [
+        "Handles book search requests"
+      ],
+      "collaborators": [
+        "DBCommand",
+        "TUI",
+        "LogInHandler",
+        "Book"
+      ]
+    },
+    {
+      "name": "Librarian",
+      "superclasses": "",
+      "subclasses": "",
+      "type": 1,
+      "responsibilities": [
+        "can add, remove, sell and see the status of books.",
+        "can give out fines and or ban customer accounts"
+      ],
+      "collaborators": [
+        "DBCommand",
+        "TUI",
+        "Book"
+      ]
+    },
+    {
+      "name": "Customer",
+      "superclasses": "",
+      "subclasses": "",
+      "type": 1,
+      "responsibilities": [
+        "Can borrow books",
+        "Can send in a book review",
+        "Can receive and pay off a fine"
+      ],
+      "collaborators": [
+        "DBCommand",
+        "TUI",
+        "Book"
+      ]
+    },
+    {
+      "name": "LogInHandler",
+      "superclasses": "",
+      "subclasses": "",
+      "type": 1,
+      "responsibilities": [
+        "handles log in requests"
+      ],
+      "collaborators": [
+        "User",
+        "TUI",
+        "DBCommand"
+      ]
+    },
+    {
+      "name": "TUI",
+      "superclasses": "",
+      "subclasses": "",
+      "type": 1,
+      "responsibilities": [
+        "Text User Interface"
+      ],
+      "collaborators": [
+        "LogInHandler",
+        "User",
+        "Librarian",
+        "Customer"
+      ]
+    },
+    {
+      "name": "DBCommand",
+      "superclasses": "",
+      "subclasses": "",
+      "type": 1,
+      "responsibilities": [
+        "Creates SQL-command"
+      ],
+      "collaborators": [
+        "DBHandler",
+        "Book",
+        "User",
+        "Customer",
+        "Librarian",
+        "LogInHandler",
+        ""
+      ]
+    }
+  ]
