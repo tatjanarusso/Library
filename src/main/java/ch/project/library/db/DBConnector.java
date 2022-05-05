@@ -12,12 +12,12 @@ public class DBConnector {
 
     public Connection getConnection(){
         try{
-            Class.forName("com.mysql.jdbc.Driver");  
+            Class.forName("com.oracle.jdbc");  
             return DriverManager.getConnection("jdbc:mysql://localhost:88/library_management", "user", "");
         } catch(ClassNotFoundException e){
-            System.out.println("fuuuuuuuuuuck");
+            e.printStackTrace();
         } catch(SQLException e){
-            System.out.println("fuck sql/tatjana");
+            e.printStackTrace();
         }
         return null;
     }
