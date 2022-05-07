@@ -2,7 +2,7 @@ package ch.project.library;
 
 import java.util.Scanner;
 
-public class Customer {
+public class User {
 
     public void searchBook(){
         Scanner sc = new Scanner(System.in);
