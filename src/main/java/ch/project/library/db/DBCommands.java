@@ -9,17 +9,16 @@ import ch.project.library.Book;
 import ch.project.library.user.Customer;
 
 public class DBCommands {
-    private Connection db;
+    private DBHandler dbHandler;
 
     public DBCommands(){
         DBConnector connector = new DBConnector();
-        db = connector.getConnection();
+        dbHandler = new DBHandler(connector.getConnection());
     }
 
     public Customer logIn(String username, String pwd){
         try{
-            Statement statement = db.createStatement();
-            ResultSet userData = statement.executeQuery("select forename, surname, email, username, isLibrarian from user_library where username = '" + username + "' and password = '" + pwd + "'");
+            ResultSet userData = dbHandler.executeCommand("select forename, surname, email, username, isLibrarian from user_library where username = '" + username + "' and password = '" + pwd + "'");
             if(userData.next()){
                 return new Customer(userData.getString("forename"), userData.getString("surname"), userData.getString("email"), userData.getString("username"));
             } else {
@@ -33,15 +32,10 @@ public class DBCommands {
 
     public List<Book> searchBook(String searchedName){
         try{
-            Statement statement = db.createStatement();
-            ResultSet bookResult = statement.executeQuery("select * from book where title like '%" + searchedName + "'%");
+            ResultSet bookResult = dbHandler.executeCommand("select * from book where title like '%" + searchedName + "'%");
             List<Book> bookList = new ArrayList<Book>();
             while(bookResult.next()){
-                String author = getAuthorName(bookResult.getInt("id_author"));
-                String language = getLanguage(bookResult.getInt("id_language"));
-                String genre = getGenre(bookResult.getInt("id_genre"));
-                Book book = new Book(bookResult.getString("title"), author, genre, language, bookResult.getString("description"), bookResult.getInt("rating"), bookResult.getInt("id_book"));
-                bookList.add(book);
+                bookList.add(createBook(bookResult));
             }
             return bookList;
             
@@ -52,18 +46,12 @@ public class DBCommands {
 
     public List<Book> searchBookByGenre(String searchedGenre){
         try{
-            Statement statement = db.createStatement();
-            ResultSet categorieResult = statement.executeQuery("select name from genre where genre like %" + searchedGenre + "%");
+            ResultSet categorieResult = dbHandler.executeCommand("select name from genre where genre like %" + searchedGenre + "%");
             List<Book> bookList = new ArrayList<Book>();
             while(categorieResult.next()){
-                Statement bookStatement = db.createStatement();
-                ResultSet bookResult = bookStatement.executeQuery("select * from book where id_genre = " + categorieResult.getInt("id_genre"));    
+                ResultSet bookResult = dbHandler.executeCommand("select * from book where id_genre = " + categorieResult.getInt("id_genre"));    
                 while(bookResult.next()){
-                    String author = getAuthorName(bookResult.getInt("id_author"));
-                    String language = getLanguage(bookResult.getInt("id_language"));
-                    String genre = getGenre(bookResult.getInt("id_genre"));
-                    Book book = new Book(bookResult.getString("title"), author, genre, language, bookResult.getString("description"), bookResult.getInt("rating"), bookResult.getInt("id_book"));
-                    bookList.add(book);                    
+                    bookList.add(createBook(bookResult));
                 }
             }
             return bookList;
@@ -74,18 +62,12 @@ public class DBCommands {
 
     public List<Book> searchBookByAuthor(String name, String sureName){
         try{
-            Statement statement = db.createStatement();
-            ResultSet authorResult = statement.executeQuery("select forename, surename from author where forename like %" + name + "% and surename like %" + sureName +"%");
+            ResultSet authorResult = dbHandler.executeCommand("select forename, surename from author where forename like %" + name + "% and surename like %" + sureName +"%");
             List<Book> bookList = new ArrayList<Book>();
             while(authorResult.next()){
-                Statement bookStatement = db.createStatement();
-                ResultSet bookResult = bookStatement.executeQuery("select * from book where id_author = " + authorResult.getInt("id_author"));    
+                ResultSet bookResult = dbHandler.executeCommand("select * from book where id_author = " + authorResult.getInt("id_author"));    
                 while(bookResult.next()){
-                    String author = getAuthorName(bookResult.getInt("id_author"));
-                    String language = getLanguage(bookResult.getInt("id_author"));
-                    String genre = getGenre(bookResult.getInt("id_genre"));
-                    Book book = new Book(bookResult.getString("title"), author, genre, language, bookResult.getString("description"), bookResult.getInt("rating"), bookResult.getInt("id_book"));
-                    bookList.add(book);                    
+                    bookList.add(createBook(bookResult));                    
                 }
             }
             return bookList;
@@ -96,12 +78,8 @@ public class DBCommands {
 
     public Book searchBookByID(int id){
         try{
-            Statement statement = db.createStatement();
-            ResultSet bookResult = statement.executeQuery("select * from book where id_book = " + id);
-            String author = getAuthorName(bookResult.getInt("id_author"));
-            String language = getLanguage(bookResult.getInt("id_language"));
-            String genre = getGenre(bookResult.getInt("id_genre"));
-            return new Book(bookResult.getString("title"), author, genre, language, bookResult.getString("description"), bookResult.getInt("rating"), bookResult.getInt("id_book"));            
+            ResultSet bookResult = dbHandler.executeCommand("select * from book where id_book = " + id);
+            return createBook(bookResult);            
         } catch(Exception e){
         }
         return null;
@@ -113,8 +91,7 @@ public class DBCommands {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");  
             LocalDateTime now = LocalDateTime.now();
             LocalDateTime expectedReturnDate = LocalDateTime.now().plusDays(days);
-            Statement statement = db.createStatement();
-            statement.executeQuery("INSERT INTO `borrowed_book`(`id_user_library`, `id_book`, `borrowed_date`, `return_date`) VALUES (" + userID + ", " + bookID + ", " + now.format(formatter) + ", " + expectedReturnDate.format(formatter) + ")");
+            dbHandler.executeCommand("INSERT INTO `borrowed_book`(`id_user_library`, `id_book`, `borrowed_date`, `return_date`) VALUES (" + userID + ", " + bookID + ", " + now.format(formatter) + ", " + expectedReturnDate.format(formatter) + ")");
 
         } catch(Exception e){
         }
@@ -125,8 +102,7 @@ public class DBCommands {
         try{
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");  
             LocalDateTime now = LocalDateTime.now();
-            Statement statement = db.createStatement();
-            statement.executeQuery("INSERT INTO `borrowed_book`(`id_user_library`, `id_book`, `borrowed_date`) VALUES (" + userID + ", " + bookID + ", " + now.format(formatter) + ")");
+            dbHandler.executeCommand("INSERT INTO `borrowed_book`(`id_user_library`, `id_book`, `borrowed_date`) VALUES (" + userID + ", " + bookID + ", " + now.format(formatter) + ")");
         } catch(Exception e){
         }
         return false;
@@ -134,8 +110,7 @@ public class DBCommands {
     
     private String getGenre(int id){
         try{
-            Statement statement = db.createStatement();
-            ResultSet nameResult = statement.executeQuery("select name from genre where id_genre = " + id);
+            ResultSet nameResult = dbHandler.executeCommand("select name from genre where id_genre = " + id);
             nameResult.next();
             return nameResult.getString("name");   
         } catch(Exception e){
@@ -145,8 +120,7 @@ public class DBCommands {
 
     private String getAuthorName(int id){
         try{
-            Statement statement = db.createStatement();
-            ResultSet nameResult = statement.executeQuery("select forename, surename from author where id_author = " + id);
+            ResultSet nameResult = dbHandler.executeCommand("select forename, surename from author where id_author = " + id);
             nameResult.next();
             return nameResult.getString("forename") + " " + nameResult.getString("surename");   
         } catch(Exception e){
@@ -156,13 +130,19 @@ public class DBCommands {
 
     private String getLanguage(int id){
         try{
-            Statement statement = db.createStatement();
-            ResultSet nameResult = statement.executeQuery("select language from language where id_language = " + id);
+            ResultSet nameResult = dbHandler.executeCommand("select language from language where id_language = " + id);
             nameResult.next();
             return nameResult.getString("language");   
         } catch(Exception e){
         }
         return "";        
 
+    }
+
+    private Book createBook(ResultSet bookResult) throws SQLException{
+        String author = getAuthorName(bookResult.getInt("id_author"));
+        String language = getLanguage(bookResult.getInt("id_language"));
+        String genre = getGenre(bookResult.getInt("id_genre"));
+        return new Book(bookResult.getString("title"), author, genre, language, bookResult.getString("description"), bookResult.getInt("rating"), bookResult.getInt("id_book"));
     }
 }
