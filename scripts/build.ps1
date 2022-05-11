@@ -1,1 +1,2 @@
-mvn package -f ../pom.xml
+mvn clean 
+mvn package ../pom.xml

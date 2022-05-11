@@ -20,7 +20,7 @@
     <dependency>
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
-      <version>5.1.32</version>
+      <version>8.0.29</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
@@ -29,15 +29,59 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>com.gitlab.klamonte</groupId>
-      <artifactId>jexer</artifactId>
-      <version>1.0.0</version>
+      <groupId>org.beryx</groupId>
+      <artifactId>text-io</artifactId>
+      <version>3.4.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.7.36</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <version>1.7.22</version>
     </dependency>
   </dependencies>
 
   <build>
-    <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
+    <!--<pluginManagement> lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
       <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>3.0.2</version>
+          <configuration>
+            <archive>
+              <manifest>
+                <addClasspath>true</addClasspath>
+                <mainClass>ch.project.library.Main</mainClass>
+              </manifest>
+            </archive>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-shade-plugin</artifactId>
+          <version>2.4.3</version>
+          <executions>
+          <execution>
+               <phase>package</phase>
+               <goals>
+                <goal>shade</goal>
+               </goals>
+          </execution>
+         </executions>          
+         <configuration>
+              <finalName>standalone-${project.artifactId}</finalName>
+              <archive>
+                  <manifest>
+                      <mainClass>ch.project.library.Main</mainClass>
+                  </manifest>
+              </archive>
+          </configuration>
+        </plugin>        
         <plugin>
           <artifactId>maven-clean-plugin</artifactId>
           <version>3.1.0</version>
@@ -53,24 +97,7 @@
         <plugin>
           <artifactId>maven-surefire-plugin</artifactId>
           <version>2.22.1</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-jar-plugin</artifactId>
-          <version>3.0.2</version>
-          <configuration>
-            <archive>
-              <manifest>
-                <addClasspath>true</addClasspath>
-                <mainClass>ch.project.library.Main</mainClass>
-              </manifest>
-            </archive>
-          </configuration>
-        </plugin>        
-        <plugin>
-          <artifactId>maven-install-plugin</artifactId>
-          <version>2.5.2</version>
-        </plugin>
+        </plugin>      
         <plugin>
           <artifactId>maven-deploy-plugin</artifactId>
           <version>2.8.2</version>
@@ -84,6 +111,6 @@
           <version>3.0.0</version>
         </plugin>
       </plugins>
-    </pluginManagement>
+    <!--</pluginManagement>-->
   </build>
 </project>

@@ -1,17 +1,20 @@
 package ch.project.library;
 
 public class Book {
+    private int bookID;
     private String bookName;
     private String author;
     private String genre;
     private String language;
     private int rating;
+    private int id;
 
-    public Book(String bookName, String author, String genre, int rating) {
+    public Book(String bookName, String author, String genre, String language, String description, int rating, int id) {
         setBookName(bookName);
         setAuthor(author);
         setGenre(genre);
         setRating(rating);
+        bookID = id;
     }
 
     public Book(){
@@ -56,5 +59,13 @@ public class Book {
 
     public void setRating(int rating) {
         this.rating = rating;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

@@ -1,2 +1,1 @@
-INSERT INTO author (forename, surename)
-VALUES (Joanne K., Rowling);
+INSERT INTO `user_library`(`forename`, `surname`, `email`, `username`, `password`, `isLibrarian`) VALUES ('gunther','Musterlachs','g@lachs.ch','g.muster','pwd123456', true)

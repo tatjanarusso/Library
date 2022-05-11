@@ -1,4 +1,4 @@
-package ch.project.library;
+package ch.project.library.user;
 
 import java.util.Scanner;
 
@@ -31,13 +31,13 @@ public class Librarian extends User {
         }
     }
 
-    public void deleteBook(){
-        searchBook();
+    public void deleteBook(int id){
+        searchBookByID(id);
         //select book and delete it.
     }
 
-    public void sellBook(){
-        deleteBook();
+    public void sellBook(int id){
+        deleteBook(id);
     }
 
     public void seeStatus(){

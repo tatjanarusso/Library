@@ -1,11 +1,13 @@
 package ch.project.library;
+import java.io.IOException;
+
+import ch.project.library.UI.Tui;
 import ch.project.library.db.*;
 
 public class Main {
-    public static void main(String args[])  
+    public static void main(String args[]) throws IOException  
     {  
-        System.out.println("Application is Startting....");
-        DBCommands commands = new DBCommands();
-        commands.test();
+        Tui ui = new Tui();
+        ui.run();
     }  
 }

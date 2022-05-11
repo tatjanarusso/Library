@@ -47,7 +47,8 @@ CREATE TABLE borrowed_book(
     id_user_library int NOT NULL,
     id_book int NOT NULL,
     borrowed_date date NOT NULL,
-    return_date date NOT NULL,
+    expected_return_date date,
+    return_date date,
 
     FOREIGN KEY (id_user_library) REFERENCES user_library(id_user_library),
     FOREIGN KEY (id_book) REFERENCES book(id_book)
