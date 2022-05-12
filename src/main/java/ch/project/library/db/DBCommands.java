@@ -175,21 +175,21 @@ public class DBCommands {
     ///
 
     public void addBook(String title, int author, int language, int genre, String description){
-        dbHandler.executeCommand("INSERT INTO `book`(`title`, `id_author`, `id_genre`, `id_language`, `description`, `rating`) VALUES ('" + title + "' , " + author + ", " + genre + ", " + language + ",'" + description + "')");
+        dbHandler.executeCommandUpdate("INSERT INTO `book`(`title`, `id_author`, `id_genre`, `id_language`, `description`) VALUES ('" + title + "' , " + author + ", " + genre + ", " + language + ",'" + description + "')");
     }
 
     public void addAuthor(String surename, String forename){
-        dbHandler.executeCommand("INSERT INTO `author`(`forename`, `surename`) VALUES ('" + forename + "','" + surename + "')");
+        dbHandler.executeCommandUpdate("INSERT INTO `author`(`forename`, `surename`) VALUES ('" + forename + "','" + surename + "')");
     }
 
     public void bookIsReturned(int returnedBook, int userID){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");  
         LocalDateTime now = LocalDateTime.now();
-        dbHandler.executeCommand("INSERT INTO borrowed_book('return_date') values('" + now.format(formatter) + "') WHERE id_user_library = " + userID + " and id_book = " + returnedBook);
+        dbHandler.executeCommandUpdate("INSERT INTO borrowed_book('return_date') values('" + now.format(formatter) + "') WHERE id_user_library = " + userID + " and id_book = " + returnedBook);
     }
 
     public void removeBook(int bookToRemove){
-        dbHandler.executeCommand("delete from book where id_book = " + bookToRemove);
+        dbHandler.executeCommandUpdate("delete from book where id_book = " + bookToRemove);
     }
 
 }

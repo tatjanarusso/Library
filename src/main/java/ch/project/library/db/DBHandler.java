@@ -20,4 +20,17 @@ public class DBHandler {
         }
         
     }
+
+    public void executeCommandUpdate(String command) {
+        Statement statement;
+        try {
+            statement = db.createStatement();
+            statement.executeUpdate(command);
+        } catch (SQLException e) {
+            System.out.println("A error occured while trying to communictae with the database");
+            e.printStackTrace();
+        }
+        
+    }
+
 }
