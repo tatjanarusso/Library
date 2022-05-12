@@ -6,8 +6,15 @@ import ch.project.library.db.*;
 
 public class Main {
     public static void main(String args[]) throws IOException  
-    {  
+    {
         Tui ui = new Tui();
-        ui.run();
+        for (String string : args) {
+            if(string.equals("--isAdmin")){
+                ui.runAsAdmin();
+            } 
+        }
+        if(args.length == 0) {
+            ui.run();
+        }
     }  
 }

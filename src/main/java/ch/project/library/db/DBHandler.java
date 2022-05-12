@@ -15,6 +15,7 @@ public class DBHandler {
             return statement.executeQuery(command);
         } catch (SQLException e) {
             System.out.println("A error occured while trying to communictae with the database");
+            e.printStackTrace();
             return null;
         }
         

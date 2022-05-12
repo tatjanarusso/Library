@@ -8,8 +8,9 @@ import ch.project.library.db.DBCommands;
 import ch.project.library.db.DBConnector;
 
 public class User {
-    private DBCommands db;
-    private int id;
+    protected DBCommands db;
+    protected int id;
+
     public void setupDB(DBCommands database){
         db = database;
     }

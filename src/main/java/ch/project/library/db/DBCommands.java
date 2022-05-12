@@ -7,6 +7,7 @@ import java.util.List;
 
 import ch.project.library.Book;
 import ch.project.library.user.Customer;
+import ch.project.library.user.Librarian;
 
 public class DBCommands {
     private DBHandler dbHandler;
@@ -14,6 +15,10 @@ public class DBCommands {
     public DBCommands(){
         DBConnector connector = new DBConnector();
         dbHandler = new DBHandler(connector.getConnection());
+    }
+
+    public void createUser(String userName, String surename, String forename, String email, String password){
+        dbHandler.executeCommand("INSERT INTO `user_library`(`forename`, `surname`, `email`, `username`, `password`) VALUES ('" + forename + "','" + surename + "','" + email + "','" + userName + "','" + password + "");
     }
 
     public Customer logIn(String username, String pwd){
@@ -30,9 +35,28 @@ public class DBCommands {
         return null;
     }
 
+    public Librarian logInAdministartor(String password){
+        try{
+            ResultSet result = dbHandler.executeCommand("select isLibrarian from user_library where username = 'admin' and password = '" + password + "'");
+            if(result.next()){
+                if(result.getBoolean("isLibrarian")){
+                    return new Librarian();
+                }else {
+                    return null;
+                }
+            } else {
+                return null;
+            }
+            
+        } catch(Exception e){
+        }
+        return null;
+
+    }
+
     public List<Book> searchBook(String searchedName){
         try{
-            ResultSet bookResult = dbHandler.executeCommand("select * from book where title like '%" + searchedName + "'%");
+            ResultSet bookResult = dbHandler.executeCommand("select * from book where title like %" + searchedName + "%");
             List<Book> bookList = new ArrayList<Book>();
             while(bookResult.next()){
                 bookList.add(createBook(bookResult));
@@ -145,4 +169,27 @@ public class DBCommands {
         String genre = getGenre(bookResult.getInt("id_genre"));
         return new Book(bookResult.getString("title"), author, genre, language, bookResult.getString("description"), bookResult.getInt("rating"), bookResult.getInt("id_book"));
     }
+
+    ///
+    /// Admin specific functions
+    ///
+
+    public void addBook(String title, int author, int language, int genre, String description){
+        dbHandler.executeCommand("INSERT INTO `book`(`title`, `id_author`, `id_genre`, `id_language`, `description`, `rating`) VALUES ('" + title + "' , " + author + ", " + genre + ", " + language + ",'" + description + "')");
+    }
+
+    public void addAuthor(String surename, String forename){
+        dbHandler.executeCommand("INSERT INTO `author`(`forename`, `surename`) VALUES ('" + forename + "','" + surename + "')");
+    }
+
+    public void bookIsReturned(int returnedBook, int userID){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");  
+        LocalDateTime now = LocalDateTime.now();
+        dbHandler.executeCommand("INSERT INTO borrowed_book('return_date') values('" + now.format(formatter) + "') WHERE id_user_library = " + userID + " and id_book = " + returnedBook);
+    }
+
+    public void removeBook(int bookToRemove){
+        dbHandler.executeCommand("delete from book where id_book = " + bookToRemove);
+    }
+
 }

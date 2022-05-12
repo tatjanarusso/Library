@@ -10,7 +10,6 @@ public class Customer extends User{
     private String sureName;
     private String email;
     private String username;
-    private DBCommands db;
     
     public Customer(String name, String lastName, String mail, String userName, int id, DBCommands database){
         foreName = name;
