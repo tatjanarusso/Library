@@ -56,7 +56,7 @@ public class DBCommands {
 
     public List<Book> searchBook(String searchedName){
         try{
-            ResultSet bookResult = dbHandler.executeCommand("select * from book where title like %" + searchedName + "%");
+            ResultSet bookResult = dbHandler.executeCommand("select * from book where title like '" + searchedName + "'");
             List<Book> bookList = new ArrayList<Book>();
             while(bookResult.next()){
                 bookList.add(createBook(bookResult));
@@ -70,7 +70,7 @@ public class DBCommands {
 
     public List<Book> searchBookByGenre(String searchedGenre){
         try{
-            ResultSet categorieResult = dbHandler.executeCommand("select name from genre where genre like %" + searchedGenre + "%");
+            ResultSet categorieResult = dbHandler.executeCommand("select id_genre from genre where name like '" + searchedGenre + "'");
             List<Book> bookList = new ArrayList<Book>();
             while(categorieResult.next()){
                 ResultSet bookResult = dbHandler.executeCommand("select * from book where id_genre = " + categorieResult.getInt("id_genre"));    
@@ -86,7 +86,7 @@ public class DBCommands {
 
     public List<Book> searchBookByAuthor(String name, String sureName){
         try{
-            ResultSet authorResult = dbHandler.executeCommand("select forename, surename from author where forename like %" + name + "% and surename like %" + sureName +"%");
+            ResultSet authorResult = dbHandler.executeCommand("select id_author from author where forename like '" + name + "'' and surename like '" + sureName + "'");
             List<Book> bookList = new ArrayList<Book>();
             while(authorResult.next()){
                 ResultSet bookResult = dbHandler.executeCommand("select * from book where id_author = " + authorResult.getInt("id_author"));    
